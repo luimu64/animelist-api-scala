@@ -15,6 +15,7 @@ object FetchAnimeData extends App {
     val password = ""
 
     case class AnimeTitle(
+        id: Int,
         name: String,
         thumbnail: String,
         status: String,
@@ -30,7 +31,8 @@ object FetchAnimeData extends App {
       var animeData: Buffer[JsValue] = Buffer()
 
       implicit val animeWrites: Writes[AnimeTitle] = (
-        (JsPath \ "name").write[String] and
+        (JsPath \ "id").write[Int] and
+          (JsPath \ "name").write[String] and
           (JsPath \ "thumbnail").write[String] and
           (JsPath \ "status").write[String] and
           (JsPath \ "rating").write[String] and
@@ -40,6 +42,7 @@ object FetchAnimeData extends App {
       while (rs.next()) {
         animeData += Json.toJson(
           AnimeTitle(
+            rs.getInt("id"),
             rs.getString("name"),
             rs.getString("thumbnail"),
             rs.getString("status"),
