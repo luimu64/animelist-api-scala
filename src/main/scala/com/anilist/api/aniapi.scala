@@ -1,16 +1,16 @@
 package com.anilist.api
 
 import org.scalatra._
-import com.anilist.models._
+import com.anilist.controllers.anicontroller
 import org.scalatra.CorsSupport
 
 class aniapi extends ScalatraServlet with CorsSupport {
 
-  options("/*"){
+  options("/*") {
     response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"))
   }
 
-  get("/v1/aniapi") {
-    FetchAnimeData.getData
+  get("/aniapi/getAll/:userid") {
+    anicontroller.getUserAnimelist(params("userid"))
   }
 }

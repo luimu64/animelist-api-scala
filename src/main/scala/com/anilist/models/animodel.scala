@@ -2,26 +2,25 @@ package com.anilist.models
 
 import java.sql.{Connection, DriverManager}
 import play.api.libs.json._
-import scala.collection.immutable._
 import play.api.libs.functional.syntax._
 import scala.collection.mutable.Buffer
 
-object FetchAnimeData extends App {
+case class AnimeTitle(
+                       id: Int,
+                       name: String,
+                       thumbnail: String,
+                       status: String,
+                       rating: String,
+                       reasoning: String
+                     )
+
+object AnimeData {
   var connection: Connection = _
 
-  def getData: String = {
+  def getAnimeList(userid: String): String = {
     val url = "jdbc:mysql://localhost:3306/animelist"
     val username = "root"
     val password = ""
-
-    case class AnimeTitle(
-        id: Int,
-        name: String,
-        thumbnail: String,
-        status: String,
-        rating: String,
-        reasoning: String
-    )
 
     try {
       connection = DriverManager.getConnection(url, username, password)
@@ -37,7 +36,7 @@ object FetchAnimeData extends App {
           (JsPath \ "status").write[String] and
           (JsPath \ "rating").write[String] and
           (JsPath \ "reasoning").write[String]
-      )(unlift(AnimeTitle.unapply))
+        ) (unlift(AnimeTitle.unapply))
 
       while (rs.next()) {
         animeData += Json.toJson(
