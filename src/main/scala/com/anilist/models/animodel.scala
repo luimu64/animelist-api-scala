@@ -1,8 +1,9 @@
 package com.anilist.models
 
-import java.sql.{Connection, DriverManager}
+import java.sql.{Connection, DriverManager, PreparedStatement}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+
 import scala.collection.mutable.Buffer
 
 case class AnimeTitle(
@@ -15,20 +16,22 @@ case class AnimeTitle(
                      )
 
 object AnimeData {
-  var connection: Connection = _
+  var con: Connection = _
 
-  def getAnimeList(userid: String): String = {
+  def getAnimeList(userid: Int): String = {
+    val query: String = "SELECT * FROM list WHERE userID = ?"
     val url = "jdbc:mysql://localhost:3306/animelist"
     val username = "root"
     val password = ""
 
     try {
-      connection = DriverManager.getConnection(url, username, password)
-      val statement = connection.createStatement
-      val rs = statement.executeQuery("SELECT * FROM list")
+      con = DriverManager.getConnection(url, username, password)
+      val stmt: PreparedStatement = con.prepareStatement(query)
+      stmt.setInt(1, userid)
+      val rs = stmt.executeQuery()
 
-      var animeData: Buffer[JsValue] = Buffer()
 
+      //definitions for json library
       implicit val animeWrites: Writes[AnimeTitle] = (
         (JsPath \ "id").write[Int] and
           (JsPath \ "name").write[String] and
@@ -38,6 +41,7 @@ object AnimeData {
           (JsPath \ "reasoning").write[String]
         ) (unlift(AnimeTitle.unapply))
 
+      var animeData: Buffer[JsValue] = Buffer()
       while (rs.next()) {
         animeData += Json.toJson(
           AnimeTitle(
@@ -50,7 +54,7 @@ object AnimeData {
           )
         )
       }
-      connection.close()
+      con.close()
       Json.stringify(Json.toJson(animeData))
     } catch {
       case e: Exception =>
