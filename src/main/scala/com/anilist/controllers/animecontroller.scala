@@ -2,10 +2,10 @@ package com.anilist.controllers
 
 import com.anilist.models._
 
-object anicontroller {
+object AnimeController {
 
   def getUserAnimelist(userid: String): String = {
-    AnimeData.getAnimeList(userid.toInt)
+    AnimeModel.getAnimeList(userid.toInt)
   }
 }
 
