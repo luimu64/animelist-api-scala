@@ -1,13 +1,11 @@
 package com.anilist.models
 
 import play.api.libs.json._
-
+import com.anilist.controllers.{helpers, Credentials}
 import java.sql.{Connection, DriverManager, PreparedStatement, SQLException}
 
 object UserModel {
   var con: Connection = _
-
-  def filterQ(string: String): String = string.replace("\"", "")
 
   def getUserByUsername(username: String): JsObject = {
     val query: String = "SELECT * FROM users WHERE username = ?"
@@ -15,7 +13,7 @@ object UserModel {
     try {
       con = DriverManager.getConnection(DbInfo.url, DbInfo.username, DbInfo.password)
       val stmt: PreparedStatement = con.prepareStatement(query)
-      stmt.setString(1, filterQ(username))
+      stmt.setString(1, helpers.filterQ(username))
 
       val rs = stmt.executeQuery()
       var user: JsObject = Json.obj()
@@ -31,9 +29,9 @@ object UserModel {
       user
     } catch {
       case e: SQLException =>
-        //returning stacktrace potential security risk
         e.printStackTrace()
-        Json.obj()
+        con.close()
+        helpers.JsonErrorAsObj("getting-user-from-database-failed")
     }
   }
 
