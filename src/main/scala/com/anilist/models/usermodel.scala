@@ -36,4 +36,26 @@ object usermodel {
         Json.obj()
     }
   }
+
+  def addUser(cr: Credentials): Boolean = {
+    val query: String = "INSERT INTO users (username, password) VALUES (?, ?)"
+    //executeUpdate returns number of affected rows
+    var success: Int = 0
+
+    try {
+      con = DriverManager.getConnection(DbInfo.url, DbInfo.username, DbInfo.password)
+      val stmt: PreparedStatement = con.prepareStatement(query)
+      stmt.setString(1, cr.username)
+      stmt.setString(2, cr.password)
+
+      success = stmt.executeUpdate()
+      con.close()
+      success == 1
+    } catch {
+      case e: SQLException =>
+        e.printStackTrace()
+        con.close()
+        success == 1
+    }
+  }
 }
