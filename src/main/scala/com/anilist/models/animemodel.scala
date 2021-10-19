@@ -5,20 +5,19 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import scala.collection.mutable.Buffer
 
+case class AnimeTitle(
+                       id: Int,
+                       name: String,
+                       thumbnail: String,
+                       status: String,
+                       rating: String,
+                       reasoning: String
+                     )
+
 object AnimeModel {
   var con: Connection = _
 
   def formatAnimeDataToJson(rs: ResultSet): String = {
-    //this function really should be in controller
-    case class AnimeTitle(
-                           id: Int,
-                           name: String,
-                           thumbnail: String,
-                           status: String,
-                           rating: String,
-                           reasoning: String
-                         )
-
     //template for json structure
     implicit val animeWrites: Writes[AnimeTitle] = (
       (JsPath \ "id").write[Int] and
