@@ -4,7 +4,7 @@ import play.api.libs.json._
 
 import java.sql.{Connection, DriverManager, PreparedStatement, SQLException}
 
-object usermodel {
+object UserModel {
   var con: Connection = _
 
   def filterQ(string: String): String = string.replace("\"", "")

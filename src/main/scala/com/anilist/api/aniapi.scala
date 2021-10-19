@@ -26,7 +26,7 @@ class aniapi extends ScalatraServlet with CorsSupport {
   }
 
   post("/aniapi/login") {
-    UserController.login(request.body)
+    UserController.loginUser(request.body)
   }
 
   post("/aniapi/register") {
