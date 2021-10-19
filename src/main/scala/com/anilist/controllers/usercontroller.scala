@@ -2,7 +2,9 @@ package com.anilist.controllers
 
 import pdi.jwt.{JwtJson, JwtAlgorithm}
 import play.api.libs.json._
-import com.anilist.models.usermodel
+import com.anilist.models.UserModel
+
+case class Credentials(username: String, password: String)
 
 object UserController {
   val key = "placeholder"
