@@ -31,4 +31,11 @@ class aniapi extends ScalatraServlet with CorsSupport {
   post("/aniapi/register") {
     UserController.registerUser(request.body)
   }
+
+  post("/aniapi/list/add") {
+    if (token.isDefined) {
+      if (helpers.isLoggedIn(token.get)) AnimeController.addAnimeTitle(request.body)
+      else helpers.JsonError("not-authenticated")
+    } else helpers.JsonError("not-authenticated")
+  }
 }

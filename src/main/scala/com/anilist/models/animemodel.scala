@@ -63,4 +63,36 @@ object AnimeModel {
         e.printStackTrace().toString
     }
   }
+
+  def addNewTitle(data: JsValue): Boolean = {
+    val query: String = "INSERT INTO list (name, thumbnail, status, rating, reasoning, airing, episodes, score, synopsis, url, userID) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
+
+    var success: Int = 0
+
+    try {
+      con = DriverManager.getConnection(DbInfo.url, DbInfo.username, DbInfo.password)
+      val stmt: PreparedStatement = con.prepareStatement(query)
+      stmt.setString(1, (data \ "data" \ "title").as[String])
+      stmt.setString(2, (data \ "data" \ "image_url").as[String])
+      stmt.setBoolean(6, (data \ "data" \ "airing").as[Boolean])
+      stmt.setInt(7, (data \ "data" \ "episodes").as[Int])
+      stmt.setFloat(8, (data \ "data" \ "score").as[Float])
+      stmt.setString(9, (data \ "data" \ "synopsis").as[String])
+      stmt.setString(10, (data \ "data" \ "url").as[String])
+      stmt.setInt(11, (data \ "userID").as[Int])
+
+      stmt.setString(3, (data \ "status").as[String])
+      stmt.setString(4, (data \ "rating").as[String])
+      stmt.setString(5, (data \ "reasoning").as[String])
+
+      success = stmt.executeUpdate()
+
+      con.close()
+      success == 1
+    } catch {
+      case e: SQLException =>
+        e.printStackTrace()
+        success == 1
+    }
+  }
 }
