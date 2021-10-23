@@ -20,7 +20,7 @@ class aniapi extends ScalatraServlet with CorsSupport {
   }
 
   get("/aniapi/list/get/auth/:userid") {
-    if (token.isDefined && helpers.isLoggedIn(token.get)) AnimeController.getUserAnimelist(params("userid"))
+    if (helpers.isLoggedIn(token.get)) AnimeController.getUserAnimelist(params("userid"))
     else helpers.JsonError("not-authenticated")
   }
 

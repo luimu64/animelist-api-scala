@@ -7,7 +7,10 @@ import play.api.libs.json.{JsObject, Json}
 object helpers {
   def filterQ(string: String): String = string.replace("\"", "")
 
-  def isLoggedIn(token: String): Boolean = JwtJson.isValid(token, key, Seq(algo))
+  def isLoggedIn(token: String = ""): Boolean = {
+    if (token != "") JwtJson.isValid(token, key, Seq(algo))
+    else false
+  }
 
   def JsonError(message: String): String = Json.stringify(Json.obj("error" -> message))
 

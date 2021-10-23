@@ -59,8 +59,8 @@ object AnimeModel {
       animeDataJson
     } catch {
       case e: SQLException =>
-        //returning stacktrace potential security risk
-        e.printStackTrace().toString
+        e.printStackTrace()
+        ""
     }
   }
 

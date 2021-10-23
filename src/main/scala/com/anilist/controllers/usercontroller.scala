@@ -5,8 +5,6 @@ import play.api.libs.json._
 import com.anilist.models.UserModel._
 import com.github.t3hnar.bcrypt._
 
-import scala.util.Try
-
 case class Credentials(username: String, password: String)
 
 object UserController {
