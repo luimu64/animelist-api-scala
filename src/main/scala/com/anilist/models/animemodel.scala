@@ -115,4 +115,25 @@ object AnimeModel {
         success == 1
     }
   }
+
+  def deleteTitle(data: JsValue): Boolean = {
+    val query: String = "DELETE FROM list WHERE (userID = ? and mal_id = ?) "
+
+    var success: Int = 0
+
+    try {
+      con = DriverManager.getConnection(DbInfo.url, DbInfo.username, DbInfo.password)
+      val stmt: PreparedStatement = con.prepareStatement(query)
+      stmt.setInt(1, (data \ "userID").as[Int])
+      stmt.setInt(2, (data \ "mal_id").as[Int])
+      success = stmt.executeUpdate()
+
+      con.close()
+      success == 1
+    } catch {
+      case e: SQLException =>
+        e.printStackTrace()
+        success == 1
+    }
+  }
 }
