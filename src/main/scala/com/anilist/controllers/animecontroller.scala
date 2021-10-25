@@ -18,5 +18,10 @@ object AnimeController {
     if (AnimeModel.deleteTitle(Json.parse(reqBody))) helpers.JsonResponse("deleting-success")
     else helpers.JsonError("deleting-failed")
   }
+
+  def editAnimeTitle(reqBody: String): String = {
+    if (AnimeModel.editTitle(Json.parse(reqBody))) helpers.JsonResponse("editing-success")
+    else helpers.JsonError("editing-failed")
+  }
 }
 
