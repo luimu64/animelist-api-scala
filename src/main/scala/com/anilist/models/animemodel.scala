@@ -1,7 +1,6 @@
 package com.anilist.models
 
-import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet, SQLException}
-import play.api.libs.functional.syntax._
+import java.sql.{Connection, DriverManager, PreparedStatement, SQLException}
 import play.api.libs.json._
 import scala.collection.mutable.Buffer
 
@@ -23,47 +22,9 @@ case class AnimeTitle(
 object AnimeModel {
   var con: Connection = _
 
-  def formatAnimeDataToJson(rs: ResultSet): String = {
-    //template for json structure
-    implicit val animeWrites: Writes[AnimeTitle] = (
-      (JsPath \ "id").write[Int] and
-        (JsPath \ "mal_id").write[Int] and
-        (JsPath \ "name").write[String] and
-        (JsPath \ "thumbnail").write[String] and
-        (JsPath \ "status").write[String] and
-        (JsPath \ "rating").write[String] and
-        (JsPath \ "reasoning").write[String] and
-        (JsPath \ "airing").write[Boolean] and
-        (JsPath \ "episodes").write[Int] and
-        (JsPath \ "score").write[Float] and
-        (JsPath \ "synopsis").write[String] and
-        (JsPath \ "url").write[String]
-      ) (unlift(AnimeTitle.unapply))
-
-    var animeData: Buffer[JsValue] = Buffer()
-    while (rs.next()) {
-      animeData += Json.toJson(
-        AnimeTitle(
-          rs.getInt("id"),
-          rs.getInt("mal_id"),
-          rs.getString("name"),
-          rs.getString("thumbnail"),
-          rs.getString("status"),
-          rs.getString("rating"),
-          rs.getString("reasoning"),
-          rs.getBoolean("airing"),
-          rs.getInt("episodes"),
-          rs.getFloat("score"),
-          rs.getString("synopsis"),
-          rs.getString("url")
-        )
-      )
-    }
-    Json.stringify(Json.toJson(animeData))
-  }
-
-  def getAnimeList(userid: Int): String = {
+  def getAnimeList(userid: Int): Buffer[AnimeTitle] = {
     val query: String = "SELECT * FROM list WHERE userID = ?"
+    var animeData: Buffer[AnimeTitle] = Buffer()
 
     try {
       con = DriverManager.getConnection(DbInfo.url, DbInfo.username, DbInfo.password)
@@ -71,14 +32,31 @@ object AnimeModel {
       stmt.setInt(1, userid)
 
       val rs = stmt.executeQuery()
-      val animeDataJson = formatAnimeDataToJson(rs)
+
+      while (rs.next()) {
+        animeData +=
+          AnimeTitle(
+            rs.getInt("id"),
+            rs.getInt("mal_id"),
+            rs.getString("name"),
+            rs.getString("thumbnail"),
+            rs.getString("status"),
+            rs.getString("rating"),
+            rs.getString("reasoning"),
+            rs.getBoolean("airing"),
+            rs.getInt("episodes"),
+            rs.getFloat("score"),
+            rs.getString("synopsis"),
+            rs.getString("url")
+          )
+      }
 
       con.close()
-      animeDataJson
+      animeData
     } catch {
       case e: SQLException =>
         e.printStackTrace()
-        ""
+        animeData
     }
   }
 
