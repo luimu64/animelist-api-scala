@@ -41,9 +41,9 @@ object UserController {
     val hashedPw = (json \ "password").as[String].bcryptSafeBounded
     var credentials = Credentials((json \ "username").as[String], hashedPw.get)
 
-
-    val success = UserModel.addUser(credentials)
-    if (success) helpers.JsonResponse("registering-success")
-    else helpers.JsonError("registering-user-failed")
+    if (UserModel.getUserByUsername(credentials.username).username == "") {
+      if (UserModel.addUser(credentials)) helpers.JsonResponse("Registering succeeded")
+      else helpers.JsonError("Registering failed")
+    } else helpers.JsonError("User already exists")
   }
 }
