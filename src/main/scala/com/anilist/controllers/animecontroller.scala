@@ -29,8 +29,10 @@ object AnimeController {
   }
 
   def addAnimeTitle(reqBody: String): String = {
-    if (AnimeModel.addNewTitle(Json.parse(reqBody))) helpers.JsonResponse("New series added")
-    else helpers.JsonError("Adding failed")
+    if (!AnimeModel.existsInDb(Json.parse(reqBody))) {
+      if (AnimeModel.addNewTitle(Json.parse(reqBody))) helpers.JsonResponse("New series added")
+      else helpers.JsonError("Adding failed")
+    } else helpers.JsonError("Already on list")
   }
 
   def deleteAnimeTitle(reqBody: String): String = {

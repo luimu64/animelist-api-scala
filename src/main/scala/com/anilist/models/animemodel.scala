@@ -22,6 +22,28 @@ case class AnimeTitle(
 object AnimeModel {
   var con: Connection = _
 
+  def existsInDb(titleData: JsValue): Boolean = {
+    val query: String = "SELECT * FROM list WHERE (userID = ? and mal_id = ?)"
+    var hasRows: Boolean = false
+
+    try {
+      con = DriverManager.getConnection(DbInfo.url, DbInfo.username, DbInfo.password)
+      val stmt: PreparedStatement = con.prepareStatement(query)
+      stmt.setInt(1, (titleData \ "userID").as[Int])
+      stmt.setInt(2, (titleData \ "data" \ "mal_id").as[Int])
+
+      val rs = stmt.executeQuery()
+
+      hasRows = rs.next()
+      con.close()
+      hasRows
+    } catch {
+      case e: SQLException =>
+        e.printStackTrace()
+        hasRows
+    }
+  }
+
   def getAnimeList(userid: Int): Buffer[AnimeTitle] = {
     val query: String = "SELECT * FROM list WHERE userID = ?"
     var animeData: Buffer[AnimeTitle] = Buffer()
