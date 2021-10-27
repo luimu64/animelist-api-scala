@@ -31,8 +31,8 @@ object UserController {
     if (userFromDb.username != "") {
       if (pwFromRequest.isBcryptedBounded(userFromDb.password)) {
         Json.stringify(Json.obj("token" -> token, "userID" -> userFromDb.userID))
-      } else helpers.JsonError("wrong-info")
-    } else helpers.JsonError("user-not-in-database")
+      } else helpers.JsonError("Incorrect username or password")
+    } else helpers.JsonError("User not found")
   }
 
   def registerUser(reqBody: String): String = {

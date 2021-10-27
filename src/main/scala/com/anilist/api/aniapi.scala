@@ -30,21 +30,21 @@ class aniapi extends ScalatraServlet with CorsSupport {
   post("/aniapi/list/add") {
     if (token.isDefined) {
       if (helpers.isLoggedIn(token.get)) AnimeController.addAnimeTitle(request.body)
-      else helpers.JsonError("not-authenticated")
-    } else helpers.JsonError("not-authenticated")
+      else helpers.JsonError("Not authenticated")
+    } else helpers.JsonError("Not authenticated")
   }
 
   post("/aniapi/list/remove") {
     if (token.isDefined) {
       if (helpers.isLoggedIn(token.get)) AnimeController.deleteAnimeTitle(request.body)
-      else helpers.JsonError("not-authenticated")
-    } else helpers.JsonError("not-authenticated")
+      else helpers.JsonError("Not authenticated")
+    } else helpers.JsonError("Not authenticated")
   }
 
   post("/aniapi/list/edit") {
     if (token.isDefined) {
       if (helpers.isLoggedIn(token.get)) AnimeController.editAnimeTitle(request.body)
-      else helpers.JsonError("not-authenticated")
-    } else helpers.JsonError("not-authenticated")
+      else helpers.JsonError("Not authenticated")
+    } else helpers.JsonError("Not authenticated")
   }
 }

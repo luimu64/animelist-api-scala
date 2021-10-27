@@ -29,18 +29,18 @@ object AnimeController {
   }
 
   def addAnimeTitle(reqBody: String): String = {
-    if (AnimeModel.addNewTitle(Json.parse(reqBody))) helpers.JsonResponse("adding-success")
-    else helpers.JsonError("adding-failed")
+    if (AnimeModel.addNewTitle(Json.parse(reqBody))) helpers.JsonResponse("New series added")
+    else helpers.JsonError("Adding failed")
   }
 
   def deleteAnimeTitle(reqBody: String): String = {
-    if (AnimeModel.deleteTitle(Json.parse(reqBody))) helpers.JsonResponse("deleting-success")
-    else helpers.JsonError("deleting-failed")
+    if (AnimeModel.deleteTitle(Json.parse(reqBody))) helpers.JsonResponse("Deletion succeeded")
+    else helpers.JsonError("Deletion failed")
   }
 
   def editAnimeTitle(reqBody: String): String = {
-    if (AnimeModel.editTitle(Json.parse(reqBody))) helpers.JsonResponse("editing-success")
-    else helpers.JsonError("editing-failed")
+    if (AnimeModel.editTitle(Json.parse(reqBody))) helpers.JsonResponse("Editing succeeded")
+    else helpers.JsonError("Editing failed")
   }
 }
 
