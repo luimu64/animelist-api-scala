@@ -4,11 +4,14 @@ import play.api.libs.json._
 import com.anilist.controllers.{helpers, Credentials}
 import java.sql.{Connection, DriverManager, PreparedStatement, SQLException}
 
+case class User(username: String, password: String, userID: Int)
+
 object UserModel {
   var con: Connection = _
 
-  def getUserByUsername(username: String): JsObject = {
+  def getUserByUsername(username: String): User = {
     val query: String = "SELECT * FROM users WHERE username = ?"
+    var user: User = User("", "", 0)
 
     try {
       con = DriverManager.getConnection(DbInfo.url, DbInfo.username, DbInfo.password)
@@ -16,14 +19,13 @@ object UserModel {
       stmt.setString(1, helpers.filterQ(username))
 
       val rs = stmt.executeQuery()
-      var user: JsObject = Json.obj()
 
       if (rs.next()) {
-        user = Json.obj(
-          "username" -> rs.getString("username"),
-          "password" -> rs.getString("password"),
-          "userID" -> rs.getString("userID"))
-      } else user = Json.obj()
+        user = User(
+          rs.getString("username"),
+          rs.getString("password"),
+          rs.getInt("userID"))
+      }
 
       con.close()
       user
@@ -31,7 +33,7 @@ object UserModel {
       case e: SQLException =>
         e.printStackTrace()
         con.close()
-        helpers.JsonErrorAsObj("getting-user-from-database-failed")
+        user
     }
   }
 
