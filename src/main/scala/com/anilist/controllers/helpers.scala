@@ -17,4 +17,9 @@ object helpers {
   def JsonResponse(message: String): String = Json.stringify(Json.obj("message" -> message))
 
   def JsonErrorAsObj(message: String): JsObject = Json.obj("error" -> message)
+
+  def removeHTMLTags(input: String): String = {
+    input.replaceAll("""<\w+?>""", "")
+      .replaceAll("""</\w+?>""", "")
+  }
 }
