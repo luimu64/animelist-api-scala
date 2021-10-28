@@ -8,7 +8,7 @@ resolvers ++= Seq("jBCrypt Repository" at "https://repo1.maven.org/maven2/org/")
 lazy val hello = (project in file("."))
   .settings(
     name := "animelist-api",
-    version := "0.1.0-SNAPSHOT",
+    version := "1.0",
     libraryDependencies ++= Seq(
       "com.github.t3hnar" %% "scala-bcrypt" % "4.3.0",
       "com.github.jwt-scala" %% "jwt-play-json" % "9.0.2",
